@@ -1,6 +1,7 @@
 package com.anton.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.sql.Blob;
 
 @Entity
@@ -10,6 +11,7 @@ public class Attachment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotEmpty
     private String name;
     @ManyToOne
     @JoinColumn(name="ticket_id", referencedColumnName = "id")

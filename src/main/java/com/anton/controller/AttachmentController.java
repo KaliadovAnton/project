@@ -1,5 +1,7 @@
 package com.anton.controller;
 
+import com.anton.converter.AttachmentConverter;
+import com.anton.dto.AttachmentDTO;
 import com.anton.model.Attachment;
 import com.anton.service.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,12 @@ public class AttachmentController {
 
     @Autowired
     private AttachmentService attachmentService;
+    @Autowired
+    private AttachmentConverter attachmentConverter;
 
     @GetMapping()
-    public ResponseEntity<List<Attachment>> getListOfTickets(){
-        List<Attachment> attachment = attachmentService.getListOfAttachments();
+    public ResponseEntity<List<AttachmentDTO>> getListOfTickets(){
+        List<AttachmentDTO> attachment = attachmentConverter.getListOfAttachmentsDTO();
         return ResponseEntity.ok().body(attachment);
     }
 
@@ -36,12 +40,12 @@ public class AttachmentController {
     }
 
     @PutMapping("/{id}")
-    public void updateTicket(@PathVariable("id") Long id, Attachment ticket){
-
+    public void updateTicket(@PathVariable("id") Long id, Attachment attachment){
+        attachmentService.updateAttachment(id, attachment);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Attachment> getTicketById(@PathVariable("id") Long id){
-        return ResponseEntity.ok().body(attachmentService.getAttachmentById(id));
+    public ResponseEntity<AttachmentDTO> getTicketById(@PathVariable("id") Long id){
+        return ResponseEntity.ok().body(attachmentConverter.getAttachmentDTO(id));
     }
 }

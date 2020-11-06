@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -23,6 +24,7 @@ import java.util.Properties;
 @EnableWebMvc
 @ComponentScan(basePackages = {"com.anton"})
 @EnableTransactionManagement
+@EnableAsync
 public class ApplicationConfiguration implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
@@ -76,4 +78,6 @@ public class ApplicationConfiguration implements WebMvcConfigurer {
         javaMailSender.setPassword("Zk.,k.ltdjxtrdjxrf[2");
         return javaMailSender;
     }
+
+
 }

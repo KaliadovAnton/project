@@ -1,5 +1,7 @@
 package com.anton.controller;
 
+import com.anton.converter.HistoryConverter;
+import com.anton.dto.HistoryDTO;
 import com.anton.model.History;
 import com.anton.service.HistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +18,13 @@ public class HistoryController {
 
     @Autowired
     private HistoryService historyService;
+    @Autowired
+    private HistoryConverter historyConverter;
 
     @GetMapping()
-    public ResponseEntity<List<History>> getListOfHistories(){
-        List<History> History = historyService.getListOfHistories();
-        return ResponseEntity.ok().body(History);
+    public ResponseEntity<List<HistoryDTO>> getListOfHistories(){
+        List<HistoryDTO> history = historyConverter.getListOfHistoryDTO();
+        return ResponseEntity.ok().body(history);
     }
 
     @DeleteMapping("/{id}")
@@ -37,11 +41,11 @@ public class HistoryController {
 
     @PutMapping("/{id}")
     public void updateHistory(@PathVariable("id") Long id, History history){
-
+        historyService.updateHistory(id, history);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<History> getHistoryById(@PathVariable("id") Long id){
-        return ResponseEntity.ok().body(historyService.getHistoryById(id));
+    public ResponseEntity<HistoryDTO> getHistoryById(@PathVariable("id") Long id){
+        return ResponseEntity.ok().body(historyConverter.getHistoryDTO(id));
     }
 }

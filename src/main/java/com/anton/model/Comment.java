@@ -1,6 +1,7 @@
 package com.anton.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Entity
@@ -12,7 +13,8 @@ public class Comment {
     private Long id;
     @ManyToOne
     @JoinColumn(name="user_id", referencedColumnName = "id")
-    private User userId;
+    private User user;
+    @NotEmpty
     private String text;
     private Date date;
     @ManyToOne
@@ -43,12 +45,12 @@ public class Comment {
         this.date = date;
     }
 
-    public User getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(User userId) {
-        this.userId = userId;
+    public void setUser(User userId) {
+        this.user = userId;
     }
 
     public Ticket getTicket() {

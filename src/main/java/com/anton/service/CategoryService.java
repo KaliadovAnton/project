@@ -4,6 +4,8 @@ import com.anton.model.Category;
 import com.anton.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.NoResultException;
 import java.util.List;
 
 @Service
@@ -24,6 +26,6 @@ public class CategoryService {
     }
 
     public Category getCategoryById(Long id) {
-        return categoryRepository.getCategoryById(id);
+        return categoryRepository.getCategoryById(id).orElseThrow(()-> new NoResultException("There is no category with id "+id));
     }
 }

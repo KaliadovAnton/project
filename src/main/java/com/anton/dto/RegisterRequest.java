@@ -2,14 +2,23 @@ package com.anton.dto;
 
 import com.anton.model.Role;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 public class RegisterRequest {
+
+    @Email
     private String email;
+    @NotBlank
     private String password;
+    @NotBlank
+    @Size(min=3, max=16)
     private String firstName;
+    @NotBlank
+    @Size(min=3, max=16)
     private String lastName;
     private Role role;
-
-
 
     public RegisterRequest(){};
 

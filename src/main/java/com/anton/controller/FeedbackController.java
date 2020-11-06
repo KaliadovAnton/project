@@ -1,5 +1,7 @@
 package com.anton.controller;
 
+import com.anton.converter.FeedbackConverter;
+import com.anton.dto.FeedbackDTO;
 import com.anton.model.Feedback;
 import com.anton.service.FeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +18,13 @@ public class FeedbackController {
 
     @Autowired
     private FeedbackService feedbackService;
+    @Autowired
+    private FeedbackConverter feedbackConverter;
 
     @GetMapping()
-    public ResponseEntity<List<Feedback>> getListOfFeedbacks(){
-        List<Feedback> Feedback = feedbackService.getListOfFeedbacks();
-        return ResponseEntity.ok().body(Feedback);
+    public ResponseEntity<List<FeedbackDTO>> getListOfFeedbacks(){
+        List<FeedbackDTO> feedbackDTO = feedbackConverter.getListOfFeedbackDTO();
+        return ResponseEntity.ok().body(feedbackDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -30,18 +34,18 @@ public class FeedbackController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveFeedback(@RequestBody Feedback Feedback){
-        feedbackService.addFeedback(Feedback);
+    public ResponseEntity<?> saveFeedback(@RequestBody Feedback feedback){
+        feedbackService.addFeedback(feedback);
         return ResponseEntity.ok().body("");
     }
 
     @PutMapping("/{id}")
-    public void updateFeedback(@PathVariable("id") Long id, Feedback Feedback){
-
+    public void updateFeedback(@PathVariable("id") Long id, Feedback feedback){
+        feedbackService.updateFeedback(id, feedback);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Feedback> getFeedbackById(@PathVariable("id") Long id){
-        return ResponseEntity.ok().body(feedbackService.getFeedbackById(id));
+    public ResponseEntity<FeedbackDTO> getFeedbackById(@PathVariable("id") Long id){
+        return ResponseEntity.ok().body(feedbackConverter.getFeedbackDTO(id));
     }
 }

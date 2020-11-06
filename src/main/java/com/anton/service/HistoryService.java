@@ -5,6 +5,7 @@ import com.anton.repository.HistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
 import java.util.List;
 
 @Service
@@ -26,10 +27,14 @@ public class HistoryService {
     }
 
     public History getHistoryById(Long id) {
-        return historyRepository.getHistoryById(id);
+        return historyRepository.getHistoryById(id).orElseThrow(()-> new NoResultException("Theres no history with id "+id));
     }
 
     public void addHistory(History history) {
         historyRepository.addHistory(history);
+    }
+
+    public void updateHistory(Long id, History history) {
+        historyRepository.updateHistory(id, history);
     }
 }

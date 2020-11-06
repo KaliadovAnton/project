@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.Optional;
 import java.util.List;
@@ -18,8 +19,8 @@ public class AttachmentRepository {
         this.sessionFactory = sessionFactory;
     }
 
-    public Attachment getAttachmentById(final Long id){
-        return sessionFactory.getCurrentSession().get(Attachment.class, id);
+    public Optional<Attachment> getAttachmentById(final Long id){
+        return Optional.ofNullable(sessionFactory.getCurrentSession().get(Attachment.class, id));
     }
 
     public List<Attachment> getAllAttachments(){
@@ -29,10 +30,17 @@ public class AttachmentRepository {
     }
 
     public void deleteAttachment(Long id) {
-
+        Attachment attachment = getAttachmentById(id).orElseThrow(()->new NoResultException("There is no attachment with id "+id));
+        sessionFactory.getCurrentSession().delete(attachment);
     }
 
     public void addAttachment(Attachment attachment) {
-        sessionFactory.getCurrentSession().save(attachment);
+        sessionFactory.getCurrentSession().persist(attachment);
+    }
+
+    public void updateAttachment(Long id, Attachment attachment) {
+        attachment.setId(id);
+        deleteAttachment(id);
+        sessionFactory.getCurrentSession().persist(attachment);
     }
 }

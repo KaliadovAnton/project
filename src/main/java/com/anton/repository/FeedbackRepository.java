@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +19,8 @@ public class FeedbackRepository {
         this.sessionFactory = sessionFactory;
     }
 
-    public Feedback getFeedbackById(final Long id){
-        return sessionFactory.getCurrentSession().get(Feedback.class, id);
+    public Optional<Feedback> getFeedbackById(final Long id){
+        return Optional.ofNullable(sessionFactory.getCurrentSession().get(Feedback.class, id));
     }
 
     public List<Feedback> getAllFeedbacks(){
@@ -29,11 +30,17 @@ public class FeedbackRepository {
     }
 
     public void deleteFeedback(Long id) {
-        Feedback feedback = getFeedbackById(id);
+        Feedback feedback = getFeedbackById(id).orElseThrow(()->new NoResultException("There s no feedback with id " + id));
         sessionFactory.getCurrentSession().delete(feedback);
     }
 
     public void addFeedback(Feedback feedback) {
         sessionFactory.getCurrentSession().saveOrUpdate(feedback);
+    }
+
+    public void updateFeedback(Long id, Feedback feedback) {
+        feedback.setId(id);
+        deleteFeedback(id);
+        sessionFactory.getCurrentSession().persist(feedback);
     }
 }

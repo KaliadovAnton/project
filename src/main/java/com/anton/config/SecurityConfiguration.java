@@ -1,18 +1,21 @@
 package com.anton.config;
 
-import com.anton.model.User;
+import com.anton.security.JWTAuthenticationFilter;
 import com.anton.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -20,25 +23,38 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private JWTAuthenticationFilter jwtAuthenticationFilter;
+
+    @Autowired
     private UserService userService;
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.cors().and()
+                .csrf().disable().formLogin().usernameParameter("email").passwordParameter("password").loginPage("/api/login/login").and()
                 .authorizeRequests()
-                .antMatchers("/api/login/**").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/api/login/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated();
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
     PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(10);
     }
 
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
+    }
+
+    @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        /*for(User user: userService.getListOfUsers()){
-            auth.inMemoryAuthentication().withUser(user.getFirstName()).password(pe.encode(user.getPassword())).roles(String.valueOf(user.getRole()));
-        }*/
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }

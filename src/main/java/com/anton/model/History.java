@@ -1,6 +1,7 @@
 package com.anton.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Entity
@@ -17,6 +18,7 @@ public class History {
     @ManyToOne
     @JoinColumn(name="user_id", referencedColumnName = "id")
     private User user;
+    @NotEmpty
     private String description;
 
     public Long getId() {

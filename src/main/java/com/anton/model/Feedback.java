@@ -3,6 +3,7 @@ package com.anton.model;
 
 import java.util.List;
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Entity
@@ -12,15 +13,16 @@ public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToMany
+    @ManyToOne
     @JoinColumn(name="user_id", referencedColumnName = "id")
-    private List<User> user;
+    private User user;
     private int rate;
     private Date date;
+    @NotEmpty
     private String text;
-    @ManyToMany
+    @ManyToOne
     @JoinColumn(name="ticket_id", referencedColumnName = "id")
-    private List<Ticket> ticket;
+    private Ticket ticket;
 
     public Long getId() {
         return id;
@@ -54,4 +56,19 @@ public class Feedback {
         this.text = text;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Ticket getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
 }

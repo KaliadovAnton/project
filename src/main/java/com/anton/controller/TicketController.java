@@ -1,5 +1,7 @@
 package com.anton.controller;
 
+import com.anton.converter.TicketConverter;
+import com.anton.dto.TicketDTO;
 import com.anton.model.Ticket;
 import com.anton.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +17,12 @@ import java.util.List;
 public class TicketController {
     @Autowired
     private TicketService ticketService;
+    @Autowired
+    private TicketConverter ticketConverter;
 
     @GetMapping()
-    public ResponseEntity<List<Ticket>> getListOfTickets(){
-        List<Ticket> tickets = ticketService.getListOfTickets();
+    public ResponseEntity<List<TicketDTO>> getListOfTickets(){
+        List<TicketDTO> tickets = ticketConverter.getListOfTicketsDTO();
         return ResponseEntity.ok().body(tickets);
     }
 
@@ -36,11 +40,11 @@ public class TicketController {
 
     @PutMapping("/{id}")
     public void updateTicket(@PathVariable("id") Long id, Ticket ticket){
-
+        ticketService.updateTicket(id, ticket);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Ticket> getTicketById(@PathVariable("id") Long id){
-        return ResponseEntity.ok().body(ticketService.getTicketById(id));
+    public ResponseEntity<TicketDTO> getTicketById(@PathVariable("id") Long id){
+        return ResponseEntity.ok().body(ticketConverter.getTicketDTO(id));
     }
 }

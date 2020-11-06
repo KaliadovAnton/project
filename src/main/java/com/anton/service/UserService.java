@@ -5,6 +5,8 @@ import com.anton.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.NoResultException;
 import java.util.List;
 
 @Service
@@ -27,7 +29,7 @@ public class UserService {
     }
 
     public User getUserById(Long id) {
-        return userRepository.getUserById(id);
+        return userRepository.getUserById(id).orElseThrow(()-> new NoResultException("Theres no user with id "+id));
     }
 
     public User getUserByEmail(String email){
@@ -37,4 +39,6 @@ public class UserService {
     public void updateUser(User user) {
         userRepository.updateUser(user);
     }
+
+
 }

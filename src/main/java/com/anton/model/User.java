@@ -1,6 +1,8 @@
 package com.anton.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Entity
 @Table(name = "USER")
@@ -8,16 +10,28 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotEmpty
     @Column(name = "FIRST_NAME")
     private String firstName;
+    @NotEmpty
     @Column(name = "lAST_NAME")
     private String lastName;
+    @NotEmpty
     private String email;
+    @NotEmpty
     private String password;
-    @Transient
     private String token;
     private boolean enable;
+    @Enumerated
     private Role role;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Comment> comments;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Ticket> tickets;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Feedback> feedbacks;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<History> histories;
 
     public User(){}
 

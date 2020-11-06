@@ -5,6 +5,8 @@ import com.anton.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.NoResultException;
 import java.util.List;
 
 @Service
@@ -26,11 +28,11 @@ public class TicketService {
         ticketRepository.addTicket(ticket);
     }
 
-    public void updateTicket(Ticket ticket){
-        ticketRepository.updateTicket(ticket);
+    public void updateTicket(Long id, Ticket ticket){
+        ticketRepository.updateTicket(id, ticket);
     }
 
     public Ticket getTicketById(Long id){
-        return ticketRepository.getTicketById(id);
+        return ticketRepository.getTicketById(id).orElseThrow(()->new NoResultException("There s no ticket with id "+id));
     }
 }

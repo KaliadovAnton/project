@@ -6,8 +6,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -18,8 +20,8 @@ public class UserRepository {
         this.sessionFactory = sessionFactory;
     }
 
-    public User getUserById(final Long id){
-        return sessionFactory.getCurrentSession().get(User.class, id);
+    public Optional<User> getUserById(final Long id){
+        return Optional.ofNullable(sessionFactory.getCurrentSession().get(User.class, id));
     }
 
     public List<User> getAllUsers(){
@@ -29,7 +31,7 @@ public class UserRepository {
     }
 
     public void deleteUser(Long id) {
-        User user = getUserById(id);
+        User user = getUserById(id).orElseThrow(()-> new NoResultException("Theres no user with id "+id));
         sessionFactory.getCurrentSession().delete(user);
     }
 
@@ -38,11 +40,10 @@ public class UserRepository {
     }
 
     public User getUserByEmail(String email){
-        Query query = sessionFactory.getCurrentSession().createQuery("FROM User where email = '" + email+"';");
-        return (User) query.getSingleResult();
+        return sessionFactory.getCurrentSession().createQuery("FROM User u WHERE u.email =:email", User.class).setParameter("email", email).uniqueResultOptional().orElseThrow(()->new NoResultException());
     }
 
     public void updateUser(User user) {
-        sessionFactory.getCurrentSession().saveOrUpdate(user);
+        sessionFactory.getCurrentSession().merge(user);
     }
 }
