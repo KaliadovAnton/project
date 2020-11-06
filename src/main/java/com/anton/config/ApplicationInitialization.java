@@ -10,7 +10,7 @@ public class ApplicationInitialization extends AbstractAnnotationConfigDispatche
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {ApplicationConfiguration.class};
+        return new Class[] {};
     }
 
     @Override
