@@ -10,7 +10,7 @@ public class ApplicationInitialization extends AbstractAnnotationConfigDispatche
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {};
+        return new Class[] {HibernateConfiguration.class};
     }
 
     @Override

@@ -17,6 +17,7 @@ com\anton\model\Role.class
 com\anton\model\Attachment.class
 com\anton\repository\RefreshTokenRepository.class
 com\anton\repository\UserRepository.class
+com\anton\config\SecurityInitializer.class
 com\anton\dto\CommentDTO.class
 com\anton\dto\TicketDTO.class
 com\anton\model\Comment.class

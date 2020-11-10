@@ -24,11 +24,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
     @Autowired
     private JWTAuthenticationFilter jwtAuthenticationFilter;
 
-    @Autowired
-    private UserService userService;
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.cors().and()
