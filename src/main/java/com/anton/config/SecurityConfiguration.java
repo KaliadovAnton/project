@@ -16,7 +16,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
@@ -30,14 +33,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.cors().and()
-                .csrf().disable().formLogin().usernameParameter("email").passwordParameter("password").loginPage("/api/login/login").and()
+        http.csrf().disable().formLogin().usernameParameter("email").passwordParameter("password").loginPage("/api/login/login").and()
                 .authorizeRequests()
                 .antMatchers("/api/login/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated();
+        http.cors().disable();
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
     }
 
     @Bean

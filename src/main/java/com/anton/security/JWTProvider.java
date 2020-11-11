@@ -22,7 +22,7 @@ import static java.util.Date.from;
 @Service
 public class JWTProvider {
 
-    private final Long jwtExpirationInMillis = 86400000L;
+    private final Long jwtExpirationInMillis = 864000L;
     private KeyStore keyStore;
 
     @PostConstruct
@@ -38,7 +38,12 @@ public class JWTProvider {
 
     public String generateToken(Authentication authentication) throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
         User principal = (User) authentication.getPrincipal();
-        return Jwts.builder().setSubject(principal.getUsername()).signWith(getPrivateKey()).compact();
+        return Jwts.builder()
+                .setSubject(principal.getUsername())
+                .setIssuedAt(from(Instant.now()))
+                .signWith(getPrivateKey())
+                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
+                .compact();
     }
 
     private PrivateKey getPrivateKey() throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException {
@@ -70,5 +75,9 @@ public class JWTProvider {
                 .signWith(getPrivateKey())
                 .setExpiration(from(Instant.now().plusMillis(jwtExpirationInMillis)))
                 .compact();
+    }
+
+    public Long getJwtExpirationInMillis() {
+        return jwtExpirationInMillis;
     }
 }
